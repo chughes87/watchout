@@ -1,11 +1,23 @@
 
-var width = window.innerWidth;
-var height = window.innerHeight;
+var width = 700;
+var height = 700;
 var randPositions;
 var eRadius = 10;
 var pRadius = 10;
+var currentScore = 0;
+var highScore = 0;
 
-var svg = d3.select('body').append('svg')
+var scores = d3.select('.scores');
+
+var high = scores.append('div')
+        .attr('class', 'highScore')
+        .text("High Score: " + highScore);
+
+var current = scores.append('div')
+        .attr('class', 'currentScore')
+        .text("Current Score: " + currentScore);
+
+var svg = d3.select('.board').append('svg')
       .attr('width', width)
       .attr('height', height);
 
@@ -23,9 +35,20 @@ svg.on('mousemove',function(){
         .attr("cy", function(d) { return a[1]; });
 });
 
-var collidedCallback = function(){
-  console.log('COLLISION!!!!!!1111!!');
+var updateScore = function(){
+  high.text("High Score: " + highScore);
+  current.text("Current Score: " + currentScore);
 };
+
+var collidedCallback = function(){
+  if(currentScore > highScore){
+    highScore = currentScore;
+  }
+  currentScore = 0;
+  updateScore();
+};
+
+setInterval(function(){currentScore++; updateScore();},100);
 
 var collisionDetection = function(){
   return function(t){
